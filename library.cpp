@@ -97,7 +97,8 @@ private:
     }
 
 public:
-    int getId(){
+    int getId()
+    {
         return id;
     }
     string getNameLibrary()
@@ -132,7 +133,7 @@ public:
     }
     void addBook(Book book)
     {
-         for (int i = 0; i < books.size(); i++)
+        for (int i = 0; i < books.size(); i++)
             if (name_ == books[i].getName())
             {
                 throw " A book with this name already exists";
@@ -145,7 +146,7 @@ public:
         return books;
     }
 };
-/************/
+
 class LibrariesHandler
 {
     vector<Library> libraries;
@@ -165,44 +166,55 @@ public:
         }
         else
         {
-     libraries.push_back(Library(name_,position_));
-            
+            libraries.push_back(Library(name_, position_));
         }
     }
 
     void addBook(int libId_, string name_, Publisher publisher_, BookType type_)
     {
-        for(int i=0;i<libraries.size(); i++){
-            if(libId_==libraries[i].getId()){
-                libraries[i].addBook(Book( name_,  publisher_,  type_));
-
+        for (int i = 0; i < libraries.size(); i++)
+        {
+            if (libId_ == libraries[i].getId())
+            {
+                libraries[i].addBook(Book(name_, publisher_, type_));
             }
         }
-        
     }
 
     void addBook(int libId_, Book book_)
     {
-        for(int i=0;i<libraries.size(); i++){
-            if(libId_==libraries[i].getId()){
+        for (int i = 0; i < libraries.size(); i++)
+        {
+            if (libId_ == libraries[i].getId())
+            {
                 libraries[i].addBook(book_);
-
             }
         }
     }
 
     void addMember(string name, string id)
     {
-        for(int i=0;i<members.size();i++){
-            if(id==members[i].getMemberId()){
+        for (int i = 0; i < members.size(); i++)
+        {
+            if (id == members[i].getMemberId())
+            {
                 throw "A member whit this id already exist";
             }
-
         }
-        members.push_back(Member(id,name))
-
+        members.push_back(Member(id, name))
     }
 };
+
+vector<Book> getAllBooks(int libId_)
+{
+    for (int i = 0; i < libraries.size(); i++)
+    {
+        if (libId_ == libraries[i].getId())
+        {
+            return libraries[i].getBooks();
+        }
+    }
+}
 
 int main()
 {

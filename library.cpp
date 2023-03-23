@@ -279,6 +279,9 @@ string filterByTypeAndShowInfo(int libId, BookType type){
     
 }
 
+bool borrow(string memberId, int libraryId, string name){
+    
+}
 
 };
 

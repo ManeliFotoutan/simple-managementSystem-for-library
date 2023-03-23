@@ -18,7 +18,8 @@ private:
     static int id;
     string name;
     string location;
-    public:
+
+public:
     Publisher(string name_, string location_)
     {
         name = name_;
@@ -73,13 +74,18 @@ private:
     }
 
 public:
-    string getMemberId()
-    {
-        return id;
-    }
     string getMemberName()
     {
         return name;
+    }
+    string getId()
+    {
+        return id;
+    }
+    void borrowBook(Book book)
+    {
+        if (books.size() == 5)
+            throw "You cannot borrow book! you have already borrowed 5 books" else books.push_back(book);
     }
 };
 
@@ -101,11 +107,11 @@ private:
 public:
     string booksInfoString()
     {
-        string Info="";
-       
+        string Info = "";
+
         for (int i = 0; i < books.size(); i++)
         {
-            Info+=to_string(i)+". "+books[i].getName+"\n";
+            Info += to_string(i) + ". " + books[i].getName + "\n";
         }
     }
 
@@ -121,14 +127,14 @@ public:
     {
         return position;
     }
-    bool isBookExist(string name)
+    Book getBookByName(string name)
     {
         for (int i = 0; i < books.size(); i++)
         {
             if (name == books[i].getName())
-                return true;
+                return books[i];
         }
-        return false;
+        throw "This book dosenot exist";
     }
 
     vector<Book> getBookByType(BookType type)
@@ -144,15 +150,15 @@ public:
         return booktype;
     }
 
-      string bookInfoStringByType(BookType type)
+    string bookInfoStringByType(BookType type)
     {
-        string bookType="";
-        int j=1;
+        string bookType = "";
+        int j = 1;
         for (int i = 0; i < books.size(); i++)
         {
             if (type == books[i].getType())
-            {   
-                BookType+=to_string(j)+". "+books[i].getName()+"\n";
+            {
+                BookType += to_string(j) + ". " + books[i].getName() + "\n";
                 j++;
             }
         }
@@ -232,42 +238,42 @@ public:
         members.push_back(Member(id, name))
     }
 
-
-vector<Book> getAllBooks(int libId_)
-{
-    for (int i = 0; i < libraries.size(); i++)
+    vector<Book> getAllBooks(int libId_)
     {
-        if (libId_ == libraries[i].getId())
+        for (int i = 0; i < libraries.size(); i++)
         {
-            return libraries[i].getBooks();
-        }
-    }
-}
-
-string getAllBooksInfo(int libId_)
-{
-    for (int i = 0; i < libraries.size(); i++)
-    {
-        if (libId_ == libraries[i].getId())
-        {
-            return libraries[i].printBookInfo();
-        }
-    }
-}
-
-  vector<Book> filterByType(int libId_, BookType type)
-        {
-            for (int i = 0; i < libraries.size(); i++)
+            if (libId_ == libraries[i].getId())
             {
-                if (libId_ == libraries[i].getId())
-                {
-                    return libraries[i].getBookByType(type);
-                }
+                return libraries[i].getBooks();
             }
         }
-    
-string filterByTypeAndShowInfo(int libId, BookType type){
-      {
+    }
+
+    string getAllBooksInfo(int libId_)
+    {
+        for (int i = 0; i < libraries.size(); i++)
+        {
+            if (libId_ == libraries[i].getId())
+            {
+                return libraries[i].printBookInfo();
+            }
+        }
+    }
+
+    vector<Book> filterByType(int libId_, BookType type)
+    {
+        for (int i = 0; i < libraries.size(); i++)
+        {
+            if (libId_ == libraries[i].getId())
+            {
+                return libraries[i].getBookByType(type);
+            }
+        }
+    }
+
+    string filterByTypeAndShowInfo(int libId, BookType type)
+    {
+        {
             for (int i = 0; i < libraries.size(); i++)
             {
                 if (libId_ == libraries[i].getId())
@@ -276,15 +282,20 @@ string filterByTypeAndShowInfo(int libId, BookType type){
                 }
             }
         }
-    
-}
+    }
 
-bool borrow(string memberId, int libraryId, string name){
-    
-}
-
+    bool borrow(string memberId, int libraryId, string name)
+    {
+        for (int i = 0; i < libraries.size(); i++)
+            if (libId_ == libraries[i].getId())
+                for (int i = 0; i < members.size(); i++)
+                    if (memberId == members[i].getId())
+                    {
+                        members[i].borrowBook(getBookByName(name));
+                        return true;
+                    }
+    }
 };
-
 
 int main()
 {

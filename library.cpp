@@ -41,6 +41,7 @@ private:
         name = name_;
         publisher = publisher_;
         type = type_;
+        id = id + 1;
     }
 
 public:
@@ -61,13 +62,13 @@ public:
 class Member
 {
 private:
-    string id;
+   static string id;
     string name;
     vector<Book> books;
 
     Member(string id_, string name_)
     {
-        id = id_;
+        id = id_+1;
         name = name_;
     }
 
@@ -80,12 +81,12 @@ public:
     {
         return name;
     }
-};
+}; 
 
 class Library
 {
 private:
-    int id;
+   static int id;
     string name;
     vector<Book> books;
     int position;
@@ -94,9 +95,19 @@ private:
     {
         name = name_;
         position = position_;
+        id = id + 1;
     }
 
 public:
+    
+    string printBookInfo()
+    {
+        for(int i=0;i<books.size() ;i++)
+        {
+         cout<<books[i].getName;
+        }
+    }
+
     int getId()
     {
         return id;
@@ -151,7 +162,7 @@ class LibrariesHandler
 {
     vector<Library> libraries;
     vector<Member> members;
-
+    
 public:
     void createLibrary(string name_, int position_)
     {
@@ -216,6 +227,16 @@ vector<Book> getAllBooks(int libId_)
     }
 }
 
+string getAllBooksInfo(int libId_){
+    for (int i = 0; i < libraries.size(); i++)
+    {
+        if (libId_ == libraries[i].getId())
+        {  
+            return libraries[i].printBookInfo(); 
+        }
+    }
+}
+ 
 int main()
 {
 }

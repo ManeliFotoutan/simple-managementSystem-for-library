@@ -87,6 +87,17 @@ public:
         if (books.size() == 5)
             throw "You cannot borrow book! you have already borrowed 5 books" else books.push_back(book);
     }
+
+    void returnBook(Book book)
+    {
+        for(int i=0;i<books.size();i++){
+            if(book.getName()==books[i].getName()){
+             books.erase(i);
+             return ;
+    }
+        }
+        throw "You did not borrow this book!";
+    }
 };
 
 class Library
@@ -179,6 +190,17 @@ public:
     {
         return books;
     }
+
+    // void giveBook(Book book)
+    // {
+    //     for (int i = 0; i < books.size(); i++)
+    //         if (name_ == books[i].getName())
+    //         {
+    //             return 
+    //         }
+    //     else 
+    //     return -1;
+    // }
 };
 
 class LibrariesHandler
@@ -287,7 +309,7 @@ public:
     bool borrow(string memberId, int libraryId, string name)
     {
         for (int i = 0; i < libraries.size(); i++)
-            if (libraryId== libraries[i].getId())
+            if (libraryId == libraries[i].getId())
                 for (int i = 0; i < members.size(); i++)
                     if (memberId == members[i].getId())
                     {
@@ -296,12 +318,24 @@ public:
                     }
     }
 
+    bool returnBook(string memberId, int libraryId, string name)
+    {
+        for (int i = 0; i < libraries.size(); i++)
+            if (libraryId == libraries[i].getId())
+                for (int i = 0; i < members.size(); i++)
+                    if (memberId == members[i].getId())
+                    {
+                        members[i].returnBook(getBookByName(name));
+                        return true;
+                    }
+    }
 
+    int size()
+    {
+        return libraries.size();
+    }
 
-public int size(){
-    return libraries.size();
-}
-
+  
 };
 
 int main()

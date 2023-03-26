@@ -89,18 +89,18 @@ public:
             throw "You cannot borrow book! you have already borrowed 5 books" else books.push_back(book);
     }
 
-    
-void returnBook(Book book)
+    void returnBook(Book book)
     {
-        for(int i=0;i<books.size();i++){
-            if(book.getName()==books[i].getName()){
-             books.erase(i);
-             return ;
-    }
+        for (int i = 0; i < books.size(); i++)
+        {
+            if (book.getName() == books[i].getName())
+            {
+                books.erase(i);
+                return;
+            }
         }
         throw "You did not borrow this book!";
     }
-    
 };
 
 class Library
@@ -137,7 +137,7 @@ public:
     {
         return name;
     }
-    int getPositionLibrary()
+    int getPosition()
     {
         return position;
     }
@@ -151,15 +151,14 @@ public:
         throw "This book dosenot exist";
     }
 
-    bool isBookExist() {
-          for (int i = 0; i < books.size(); i++)
+    bool isBookExist()
+    {
+        for (int i = 0; i < books.size(); i++)
         {
             if (name == books[i].getName())
                 return true;
         }
         return false;
-
-
     }
 
     vector<Book> getBookByType(BookType type)
@@ -204,17 +203,6 @@ public:
     {
         return books;
     }
-
-    // void giveBook(Book book)
-    // {
-    //     for (int i = 0; i < books.size(); i++)
-    //         if (name_ == books[i].getName())
-    //         {
-    //             return 
-    //         }
-    //     else 
-    //     return -1;
-    // }
 };
 
 class LibrariesHandler
@@ -230,7 +218,7 @@ public:
             {
                 throw " A library with this name already exists";
             }
-        if (position_ == libraries[i].getPositionLibrary())
+        if (position_ == libraries[i].getPosition())
         {
             throw "There is now a library in this place";
         }
@@ -351,30 +339,43 @@ public:
 
     Library findNearestLibraryByPosition(string name, int position)
     {
-        int min=100000;
-        vector<Library>bookLibrary;
+        int min = 100000;
+        vector<Library> bookLibrary;
         Library minDisLib;
-        for (int j = 0; j < libraries.size(); j++){
-            if(libraries[j].isBookExist(name)){
-             bookLibrary.push_back(libraries[j]);
-            }
-        }
-        if(bookLibrary.size()==0)
-        throw "-1";
+        for (int j = 0; j < libraries.size(); j++)
+            if (libraries[j].isBookExist(name))
+                bookLibrary.push_back(libraries[j]);
+        if (bookLibrary.size() == 0)
+            throw "-1";
 
-       
         for (int j = 0; j < bookLibrary.size(); j++)
-        {
-            
-            if (abs(position - bookLibrary[j].getPositionLibrary()) < min)
+
+            if (abs(position - bookLibrary[j].getPosition()) < min)
             {
 
-                min =abs(position -bookLibrary[j].getPositionLibrary());
-                minDisLib=bookLibrary[j];
-            }      
+                min = abs(position - bookLibrary[j].getPosition());
+                minDisLib = bookLibrary[j];
+            }
+        return minDisLib;
+    }
+
+    string findLibrariesHaveBook(string name, int position)
+    {
+        int min = 100000;
+        vector<Library> bookLibrary;
+        for (int j = 0; j < libraries.size(); j++)
+            if (libraries[j].isBookExist(name))
+                bookLibrary.push_back(libraries[j]);
+
+        sort(bookLibrary.begin(), bookLibrary.end(), [&Library](Library lhs, Library rhs)
+             { return lhs.getPosition() < rhs.getPosition(); });
+        string bookName = "";
+        for (int i = 0; i < bookLibrary.size(); i++)
+        {
+            bookName += to_string(i + 1) + ". " + bookLibrary[i].getName() + "\n";
         }
-      return minDisLib;
-}
+        return bookName;
+    }
 };
 
 int main()

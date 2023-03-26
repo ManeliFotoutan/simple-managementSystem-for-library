@@ -287,7 +287,7 @@ public:
     bool borrow(string memberId, int libraryId, string name)
     {
         for (int i = 0; i < libraries.size(); i++)
-            if (libId_ == libraries[i].getId())
+            if (libraryId== libraries[i].getId())
                 for (int i = 0; i < members.size(); i++)
                     if (memberId == members[i].getId())
                     {
@@ -295,6 +295,13 @@ public:
                         return true;
                     }
     }
+
+
+
+public int size(){
+    return libraries.size();
+}
+
 };
 
 int main()

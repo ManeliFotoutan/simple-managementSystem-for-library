@@ -1,8 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
- #include<cstdlib>
+#include <cstdlib>
 #include <algorithm>
+
 using namespace std;
 
 enum BookType
@@ -17,37 +18,43 @@ enum BookType
 class Publisher
 {
 private:
-    static int id;
+    static int libNum;
+    int id;
     string name;
     string location;
 
 public:
-    Publisher(){
-
+    Publisher()
+    {
     }
     Publisher(string name_, string location_)
     {
         name = name_;
         location = location_;
-        id = id + 1;
+        id = libNum + 1;
+        libNum++;
     }
 };
+int Publisher::libNum;
 
 class Book
 {
 private:
-    static int id;
+    static int libNum;
+    int id;
     string name;
     BookType type;
     Publisher publisher;
     bool borrowed;
+
 public:
     Book(string name_, Publisher publisher_, BookType type_)
     {
         name = name_;
         publisher = publisher_;
         type = type_;
-        id = id + 1;
+        id = libNum + 1;
+        libNum++;
     }
     string getName()
     {
@@ -62,14 +69,14 @@ public:
         cout << id << ". " << name;
     }
 };
+int Book::libNum;
 
 class Member
 {
 private:
-    static string id;
+    string id;
     string name;
     vector<Book> books;
-
 
 public:
     Member(string id_, string name_)
@@ -89,13 +96,15 @@ public:
     {
         if (books.size() == 5)
             throw "You cannot borrow book! you have already borrowed 5 books";
-        else books.push_back(book);
+        else
+            books.push_back(book);
     }
 
     void returnBook(Book book)
     {
-        for (auto it = books.begin() ; it != books.end() ; ++it)
-            if((*it).getName() == book.getName()){
+        for (auto it = books.begin(); it != books.end(); ++it)
+            if ((*it).getName() == book.getName())
+            {
                 books.erase(it);
                 return;
             }
@@ -106,22 +115,23 @@ public:
 class Library
 {
 private:
-    static int id;
+    static int libNum;
+    int id;
     string name;
     vector<Book> books;
     int position;
 
 public:
-
-    Library (){
-
+    Library()
+    {
     }
 
     Library(string name_, int position_)
     {
         name = name_;
         position = position_;
-        id = id + 1;
+        id = libNum + 1;
+        libNum++;
     }
     string booksInfoString()
     {
@@ -195,11 +205,11 @@ public:
     void addBook(Book book)
     {
         for (int i = 0; i < books.size(); i++)
-            if (name == books[i].getName())
+        {
+            if (book.getName() == books[i].getName())
                 throw " A book with this name already exists";
-            
+        }
         books.push_back(book);
-        cout << "hi we are here " << id << endl;
     }
 
     vector<Book> getBooks()
@@ -207,6 +217,7 @@ public:
         return books;
     }
 };
+int Library::libNum;
 
 class LibrariesHandler
 {
@@ -214,7 +225,8 @@ class LibrariesHandler
     vector<Member> members;
 
 public:
-    LibrariesHandler(){
+    LibrariesHandler()
+    {
         libraries.push_back(Library("sadaf", 10));
         libraries.push_back(Library("raha", 5));
         libraries.push_back(Library("mona", 1));
@@ -226,18 +238,20 @@ public:
     }
     void createLibrary(string name_, int position_)
     {
-        for (int i = 0; i < libraries.size(); i++){
+        for (int i = 0; i < libraries.size(); i++)
+        {
             if (name_ == libraries[i].getName())
             {
                 throw " A library with this name already exists";
             }
-            if (position_ == libraries[i].getPosition())
+            else if (position_ == libraries[i].getPosition())
             {
                 throw "There is now a library in this place";
             }
             else
             {
                 libraries.push_back(Library(name_, position_));
+                return;
             }
         }
     }
@@ -360,7 +374,7 @@ public:
 
         for (int j = 0; j < bookLibrary.size(); j++)
 
-            if (labs((position - bookLibrary[j].getPosition())) < min)
+            if (labs(position - bookLibrary[j].getPosition()) < min)
             {
 
                 min = labs(position - bookLibrary[j].getPosition());
@@ -377,7 +391,7 @@ public:
             if (libraries[j].isBookExist(name))
                 bookLibrary.push_back(libraries[j]);
 
-        sort(bookLibrary.begin(), bookLibrary.end(), [](Library& lhs,  Library& rhs)
+        sort(bookLibrary.begin(), bookLibrary.end(), [](Library &lhs, Library &rhs)
              { return lhs.getPosition() < rhs.getPosition(); });
 
         string bookName = "";
@@ -392,17 +406,34 @@ public:
 int main()
 {
     LibrariesHandler handler;
-    //string name_, Publisher publisher_, BookType type_
+    // string name_, Publisher publisher_, BookType type_
     Publisher publisher("kheili sabz", "Enghelab");
-    Book book1("amar", publisher , CLASSICS);
-    Book book2("ehtemal", publisher , HORROR);
-    Book book3("jabr", publisher , FANTASY);
-    cout << "hi" << endl;
-    try{
-        handler.addBook(1 , book1);
-        handler.addBook(1 , book1);
+    Book book1("amar", publisher, CLASSICS);
+    Book book2("ehtemal", publisher, HORROR);
+    Book book3("jabr", publisher, FANTASY);
+    try
+    {
+        handler.addBook(1, book1);
+        // handler.addBook(1 , book1); //with err
+
+        handler.addBook(2, "jabr", publisher, FANTASY);
+        handler.addBook(2, "ehtemal", publisher, HORROR);
+
+        handler.addMember("fateme", "12");
+        // handler.addMember("sara", "10"); //err
+        if (handler.borrow("10", 1, "amar"))
+            cout << "book borrowed correctly" << endl;
+
+        // handler.createLibrary("deli", 12); //err
+        // handler.createLibrary("hale", 5); //err
+        handler.createLibrary("rahil", 20);
     }
-    catch(...){
-        cout << "error poped up" << endl;
+    catch (const char *error)
+    {
+        cout << "error: " << error << endl;
+    }
+    catch (...)
+    {
+        cout << "error" << endl;
     }
 }

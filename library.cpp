@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <cstdlib>
+ #include<cstdlib>
+#include <algorithm>
 using namespace std;
 
 enum BookType
@@ -21,6 +22,9 @@ private:
     string location;
 
 public:
+    Publisher(){
+
+    }
     Publisher(string name_, string location_)
     {
         name = name_;
@@ -37,7 +41,7 @@ private:
     BookType type;
     Publisher publisher;
     bool borrowed;
-
+public:
     Book(string name_, Publisher publisher_, BookType type_)
     {
         name = name_;
@@ -45,8 +49,6 @@ private:
         type = type_;
         id = id + 1;
     }
-
-public:
     string getName()
     {
         return name;
@@ -68,13 +70,13 @@ private:
     string name;
     vector<Book> books;
 
-    Member(string id_, string name_)
-    {
-        id = id_ + 1;
-        name = name_;
-    }
 
 public:
+    Member(string id_, string name_)
+    {
+        id = id_;
+        name = name_;
+    }
     string getMemberName()
     {
         return name;
@@ -86,19 +88,17 @@ public:
     void borrowBook(Book book)
     {
         if (books.size() == 5)
-            throw "You cannot borrow book! you have already borrowed 5 books" else books.push_back(book);
+            throw "You cannot borrow book! you have already borrowed 5 books";
+        else books.push_back(book);
     }
 
     void returnBook(Book book)
     {
-        for (int i = 0; i < books.size(); i++)
-        {
-            if (book.getName() == books[i].getName())
-            {
-                books.erase(i);
+        for (auto it = books.begin() ; it != books.end() ; ++it)
+            if((*it).getName() == book.getName()){
+                books.erase(it);
                 return;
             }
-        }
         throw "You did not borrow this book!";
     }
 };
@@ -111,29 +111,34 @@ private:
     vector<Book> books;
     int position;
 
+public:
+
+    Library (){
+
+    }
+
     Library(string name_, int position_)
     {
         name = name_;
         position = position_;
         id = id + 1;
     }
-
-public:
     string booksInfoString()
     {
         string Info = "";
 
         for (int i = 0; i < books.size(); i++)
         {
-            Info += to_string(i) + ". " + books[i].getName + "\n";
+            Info += to_string(i) + ". " + books[i].getName() + "\n";
         }
+        return Info;
     }
 
     int getId()
     {
         return id;
     }
-    string getNameLibrary()
+    string getName()
     {
         return name;
     }
@@ -151,7 +156,7 @@ public:
         throw "This book dosenot exist";
     }
 
-    bool isBookExist()
+    bool isBookExist(string name)
     {
         for (int i = 0; i < books.size(); i++)
         {
@@ -179,24 +184,22 @@ public:
         string bookType = "";
         int j = 1;
         for (int i = 0; i < books.size(); i++)
-        {
             if (type == books[i].getType())
             {
-                BookType += to_string(j) + ". " + books[i].getName() + "\n";
+                bookType += to_string(j) + ". " + books[i].getName() + "\n";
                 j++;
             }
-        }
-        return booktype;
+        return bookType;
     }
 
     void addBook(Book book)
     {
         for (int i = 0; i < books.size(); i++)
-            if (name_ == books[i].getName())
-            {
+            if (name == books[i].getName())
                 throw " A book with this name already exists";
-            }
+            
         books.push_back(book);
+        cout << "hi we are here " << id << endl;
     }
 
     vector<Book> getBooks()
@@ -211,20 +214,31 @@ class LibrariesHandler
     vector<Member> members;
 
 public:
+    LibrariesHandler(){
+        libraries.push_back(Library("sadaf", 10));
+        libraries.push_back(Library("raha", 5));
+        libraries.push_back(Library("mona", 1));
+        libraries.push_back(Library("deli", 15));
+        libraries.push_back(Library("ali", 3));
+
+        members.push_back(Member("10", "Maneli"));
+        members.push_back(Member("11", "Narges"));
+    }
     void createLibrary(string name_, int position_)
     {
-        for (int i = 0; i < libraries.size(); i++)
-            if (name_ == libraries[i].getNameLibrary())
+        for (int i = 0; i < libraries.size(); i++){
+            if (name_ == libraries[i].getName())
             {
                 throw " A library with this name already exists";
             }
-        if (position_ == libraries[i].getPosition())
-        {
-            throw "There is now a library in this place";
-        }
-        else
-        {
-            libraries.push_back(Library(name_, position_));
+            if (position_ == libraries[i].getPosition())
+            {
+                throw "There is now a library in this place";
+            }
+            else
+            {
+                libraries.push_back(Library(name_, position_));
+            }
         }
     }
 
@@ -254,12 +268,12 @@ public:
     {
         for (int i = 0; i < members.size(); i++)
         {
-            if (id == members[i].getMemberId())
+            if (id == members[i].getId())
             {
                 throw "A member whit this id already exist";
             }
         }
-        members.push_back(Member(id, name))
+        members.push_back(Member(id, name));
     }
 
     vector<Book> getAllBooks(int libId_)
@@ -276,12 +290,8 @@ public:
     string getAllBooksInfo(int libId_)
     {
         for (int i = 0; i < libraries.size(); i++)
-        {
             if (libId_ == libraries[i].getId())
-            {
-                return libraries[i].printBookInfo();
-            }
-        }
+                return libraries[i].booksInfoString();
     }
 
     vector<Book> filterByType(int libId_, BookType type)
@@ -300,7 +310,7 @@ public:
         {
             for (int i = 0; i < libraries.size(); i++)
             {
-                if (libId_ == libraries[i].getId())
+                if (libId == libraries[i].getId())
                 {
                     return libraries[i].bookInfoStringByType(type);
                 }
@@ -315,7 +325,7 @@ public:
                 for (int i = 0; i < members.size(); i++)
                     if (memberId == members[i].getId())
                     {
-                        members[i].borrowBook(getBookByName(name));
+                        members[i].borrowBook(libraries[i].getBookByName(name));
                         return true;
                     }
     }
@@ -327,7 +337,7 @@ public:
                 for (int i = 0; i < members.size(); i++)
                     if (memberId == members[i].getId())
                     {
-                        members[i].returnBook(getBookByName(name));
+                        members[i].returnBook(libraries[i].getBookByName(name));
                         return true;
                     }
     }
@@ -350,10 +360,10 @@ public:
 
         for (int j = 0; j < bookLibrary.size(); j++)
 
-            if (abs(position - bookLibrary[j].getPosition()) < min)
+            if (labs((position - bookLibrary[j].getPosition())) < min)
             {
 
-                min = abs(position - bookLibrary[j].getPosition());
+                min = labs(position - bookLibrary[j].getPosition());
                 minDisLib = bookLibrary[j];
             }
         return minDisLib;
@@ -367,8 +377,9 @@ public:
             if (libraries[j].isBookExist(name))
                 bookLibrary.push_back(libraries[j]);
 
-        sort(bookLibrary.begin(), bookLibrary.end(), [&Library](Library lhs, Library rhs)
+        sort(bookLibrary.begin(), bookLibrary.end(), [](Library& lhs,  Library& rhs)
              { return lhs.getPosition() < rhs.getPosition(); });
+
         string bookName = "";
         for (int i = 0; i < bookLibrary.size(); i++)
         {
@@ -380,4 +391,18 @@ public:
 
 int main()
 {
+    LibrariesHandler handler;
+    //string name_, Publisher publisher_, BookType type_
+    Publisher publisher("kheili sabz", "Enghelab");
+    Book book1("amar", publisher , CLASSICS);
+    Book book2("ehtemal", publisher , HORROR);
+    Book book3("jabr", publisher , FANTASY);
+    cout << "hi" << endl;
+    try{
+        handler.addBook(1 , book1);
+        handler.addBook(1 , book1);
+    }
+    catch(...){
+        cout << "error poped up" << endl;
+    }
 }

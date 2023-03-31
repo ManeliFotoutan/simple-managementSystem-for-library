@@ -77,6 +77,7 @@ private:
     string id;
     string name;
     vector<Book> books;
+    vector<int> libIds;
 
 public:
     Member(string id_, string name_)
@@ -92,21 +93,32 @@ public:
     {
         return id;
     }
-    void borrowBook(Book book)
+    void borrowBook(Book book, int libId)
     {
         if (books.size() == 5)
             throw "You cannot borrow book! you have already borrowed 5 books";
         else
             books.push_back(book);
+            libIds.push_back(libId);
+
     }
 
-    void returnBook(Book book)
+    void returnBook(Book book, int libId)
     {
+        int counter=0;
         for (auto it = books.begin(); it != books.end(); ++it)
+           {
             if ((*it).getName() == book.getName())
             {
-                books.erase(it);
+                if(libId==libIds[counter])
+                {
+                    books.erase(it);
+                    libIds.erase(libIds.begin()+counter);
                 return;
+                }
+            }
+            counter ++;
+            
             }
         throw "You did not borrow this book!";
     }
@@ -139,7 +151,7 @@ public:
 
         for (int i = 0; i < books.size(); i++)
         {
-            Info += to_string(i) + ". " + books[i].getName() + "\n";
+            Info += to_string(i+1) + ". " + books[i].getName() + "\n";
         }
         return Info;
     }
@@ -163,7 +175,7 @@ public:
             if (name == books[i].getName())
                 return books[i];
         }
-        throw "This book dosenot exist";
+        throw "This book does not exist";
     }
 
     bool isBookExist(string name)
@@ -179,17 +191,18 @@ public:
     vector<Book> getBookByType(BookType type)
     {
         vector<Book> booktype;
+       
         for (int i = 0; i < books.size(); i++)
-        {
+        { 
             if (type == books[i].getType())
-            {
+            { 
                 booktype.push_back(books[i]);
             }
         }
         return booktype;
     }
 
-    string bookInfoStringByType(BookType type)
+    string  bookInfoStringByType(BookType type)
     {
         string bookType = "";
         int j = 1;
@@ -248,12 +261,11 @@ public:
             {
                 throw "There is now a library in this place";
             }
-            else
-            {
-                libraries.push_back(Library(name_, position_));
-                return;
-            }
         }
+
+                libraries.push_back(Library(name_, position_));
+            
+        
     }
 
     void addBook(int libId_, string name_, Publisher publisher_, BookType type_)
@@ -308,12 +320,12 @@ public:
                 return libraries[i].booksInfoString();
     }
 
-    vector<Book> filterByType(int libId_, BookType type)
-    {
+    vector<Book> filterByType(int libId, BookType type)
+    {     
         for (int i = 0; i < libraries.size(); i++)
-        {
-            if (libId_ == libraries[i].getId())
-            {
+        { 
+            if (libId == libraries[i].getId())
+            { 
                 return libraries[i].getBookByType(type);
             }
         }
@@ -339,21 +351,30 @@ public:
                 for (int i = 0; i < members.size(); i++)
                     if (memberId == members[i].getId())
                     {
-                        members[i].borrowBook(libraries[i].getBookByName(name));
+                        members[i].borrowBook(libraries[i].getBookByName(name),libraryId);
                         return true;
                     }
     }
 
     bool returnBook(string memberId, int libraryId, string name)
     {
+        bool memberIdExist=false;
+        bool libExist=false;
         for (int i = 0; i < libraries.size(); i++)
-            if (libraryId == libraries[i].getId())
+            if (libraryId == libraries[i].getId()){
+                libExist=true;
                 for (int i = 0; i < members.size(); i++)
                     if (memberId == members[i].getId())
-                    {
-                        members[i].returnBook(libraries[i].getBookByName(name));
+                    {   
+                        memberIdExist=true;
+                        members[i].returnBook(libraries[i].getBookByName(name),libraryId);
                         return true;
                     }
+                if(!memberIdExist)
+                throw "THis memberId does not exist!";
+            }
+        if(!libExist)
+            throw "THis libId does not exist!";
     }
 
     int size()
@@ -392,13 +413,14 @@ public:
                 bookLibrary.push_back(libraries[j]);
 
         sort(bookLibrary.begin(), bookLibrary.end(), [](Library &lhs, Library &rhs)
-             { return lhs.getPosition() < rhs.getPosition(); });
+             { return lhs.getPosition() > rhs.getPosition(); });
 
         string bookName = "";
         for (int i = 0; i < bookLibrary.size(); i++)
         {
             bookName += to_string(i + 1) + ". " + bookLibrary[i].getName() + "\n";
         }
+       
         return bookName;
     }
 };
@@ -406,17 +428,20 @@ public:
 int main()
 {
     LibrariesHandler handler;
-    // string name_, Publisher publisher_, BookType type_
+
     Publisher publisher("kheili sabz", "Enghelab");
     Book book1("amar", publisher, CLASSICS);
     Book book2("ehtemal", publisher, HORROR);
     Book book3("jabr", publisher, FANTASY);
     try
     {
-        handler.addBook(1, book1);
+       handler.addBook(1, book1);
+       handler.addBook(3, book3);
+       handler.addBook(4, book3);
+
         // handler.addBook(1 , book1); //with err
 
-        handler.addBook(2, "jabr", publisher, FANTASY);
+         handler.addBook(2, "jabr", publisher, FANTASY);
         handler.addBook(2, "ehtemal", publisher, HORROR);
 
         handler.addMember("fateme", "12");
@@ -424,9 +449,41 @@ int main()
         if (handler.borrow("10", 1, "amar"))
             cout << "book borrowed correctly" << endl;
 
-        // handler.createLibrary("deli", 12); //err
+        //handler.createLibrary("deli", 12); //err
         // handler.createLibrary("hale", 5); //err
         handler.createLibrary("rahil", 20);
+
+         
+        // vector<Book> books = handler.filterByType(2,FANTASY);
+        //  for (int i=0 ; i<books.size() ; i++)
+        // {
+        //     cout<<books[i].getName()<<endl;
+        // }
+
+        //cout<<handler.filterByTypeAndShowInfo(1,CLASSICS)<<endl;
+       
+
+        //cout<<handler.findLibrariesHaveBook("jabr",12);
+
+        // Library Pos = handler.findNearestLibraryByPosition("jabr",2);
+        // cout<<Pos.getName();
+
+        //cout<<handler.getAllBooksInfo(2)<<endl;
+
+    //    if (handler.returnBook("10", 1, "amar"))
+    //    cout<<"book returened"<<endl;
+    //     if (handler.returnBook("10", 7, "amar"))//Err libId does not exist
+    //    cout<<"book returened"<<endl;
+    //     if (handler.returnBook("17", 1, "amar"))//Err memberId does not exist
+    //    cout<<"book returened"<<endl;
+    //    if (handler.returnBook("10", 1, "a"))
+    //    cout<<"return";
+    //   if (handler.returnBook("10", 3, "amar"))
+    //      cout<<"book returened"<<endl;
+        //  cout<<handler.size();
+
+
+
     }
     catch (const char *error)
     {

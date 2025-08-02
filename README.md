@@ -1,4 +1,4 @@
-# 📚 Library Management System in C++
+#  Library Management System in C++
 
 This project implements a basic **Library Management System** in **C++**, enabling functionality such as:
 
@@ -10,18 +10,18 @@ This project implements a basic **Library Management System** in **C++**, enabli
 
 ---
 
-## 🛠️ Features
+##  Features
 
-- 📖 Add books to libraries
-- 👤 Register new members
-- 🧾 Borrow and return books (with limitations)
-- 🔎 Search books by name or type
-- 📍 Find nearest library that has a specific book
-- ❌ Error handling for duplicate libraries, books, or members
+-  Add books to libraries
+-  Register new members
+-  Borrow and return books (with limitations)
+- Search books by name or type
+-  Find nearest library that has a specific book
+-  Error handling for duplicate libraries, books, or members
 
 ---
 
-## 🧩 Class Structure
+##  Class Structure
 
 ### `Publisher`
 - Represents a publisher with name and location.
@@ -56,7 +56,7 @@ This project implements a basic **Library Management System** in **C++**, enabli
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
 1. Compile the program using a C++ compiler such as `g++`:
 

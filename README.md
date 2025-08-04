@@ -8,8 +8,6 @@ This project implements a basic **Library Management System** in **C++**, enabli
 - Finding books by type or availability
 - Searching for nearest libraries with a specific book
 
----
-
 ##  Features
 
 -  Add books to libraries
@@ -19,7 +17,6 @@ This project implements a basic **Library Management System** in **C++**, enabli
 -  Find nearest library that has a specific book
 -  Error handling for duplicate libraries, books, or members
 
----
 
 ##  Class Structure
 
@@ -53,8 +50,6 @@ This project implements a basic **Library Management System** in **C++**, enabli
   - Borrowing and returning books
   - Filtering books
   - Finding nearest libraries with available books
-
----
 
 ##  How to Run
 
